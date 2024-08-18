@@ -40,7 +40,7 @@ start_background = pygame.image.load("start-background.jpg")
 spiel_background = pygame.image.load("spiel-background.jpg")
 
 # Load the ball image
-ball_image = pygame.image.load('path_to_your_ball_image.png')
+ball_image = pygame.image.load('melone.png')
 ball_rect = ball_image.get_rect()
 ball_rect.center = ball_pos
 
@@ -107,15 +107,16 @@ while game_running:
     platform_pos[0] = max(0, min(platform_pos[0], WIDTH - PLATFORM_WIDTH))
     platform_pos[1] = max(0, min(platform_pos[1], HEIGHT - PLATFORM_HEIGHT))
 
-    # Move the ball
+   # Move the ball
     ball_pos[0] += ball_speed[0]
     ball_pos[1] += ball_speed[1]
+    ball_rect.center = ball_pos  # Update the ball image position
 
     # Bounce off the walls
-    if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
+    if ball_rect.left <= 0 or ball_rect.right >= WIDTH:
         ball_speed[0] = -ball_speed[0]
 
-    if ball_pos[1] <= 0:
+    if ball_rect.top <= 0:
         ball_speed[1] = -ball_speed[1]
 
     # Check if the ball hits the platform
@@ -153,7 +154,7 @@ while game_running:
     screen.blit(spiel_background, (0, 0))
 
     # Draw the ball
-    pygame.draw.circle(screen, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
+    screen.blit(ball_image, ball_rect)
 
     # Draw the platform
     pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), PLATFORM_WIDTH, PLATFORM_HEIGHT))
