@@ -35,9 +35,13 @@ lives = 3
 current_level = 1
 platform_color = ORANGE  # Initialize platform color
 
+# Load the background image
+start_background = pygame.image.load("start-background.jpg")
+spiel_background = pygame.image.load("spiel-background.jpg")
+
 # Functions for screens
 def start_screen():
-    screen.fill(BLACK)
+    screen.blit(start_background, (0, 0))
     show_text_on_screen("Bouncing Ball Game", 50, HEIGHT // 4)
     show_text_on_screen("Press any key to start...", 30, HEIGHT // 3)
     show_text_on_screen("Move the platform with arrow keys...", 30, HEIGHT // 2)
@@ -141,7 +145,7 @@ while game_running:
             ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]
 
     # Clear the screen
-    screen.fill(BLACK)
+    screen.blit(spiel_background, (0, 0))
 
     # Draw the ball
     pygame.draw.circle(screen, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
