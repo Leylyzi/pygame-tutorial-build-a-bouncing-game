@@ -1,10 +1,8 @@
 import pygame
-import sys
 import random
 
 # Constants
 WIDTH, HEIGHT = 800, 600
-BALL_RADIUS = 20
 PLATFORM_WIDTH, PLATFORM_HEIGHT = 100, 10
 FPS = 60
 BLACK = (0, 0, 0)
@@ -34,9 +32,10 @@ score = 0
 lives = 3
 current_level = 1
 platform_color = ORANGE  # Initialize platform color
-
-# Load the background image
+# Load the background image for the current level
 start_background = pygame.image.load("start-background.jpg")
+victory_background = pygame.image.load("start-background.jpg")
+game_over_background = pygame.image.load("start-background.jpg")
 spiel_background = pygame.image.load("spiel-background.jpg")
 
 # Load the ball image
@@ -47,7 +46,7 @@ ball_rect.center = ball_pos
 # Load the platform image
 platform_image = pygame.image.load('sofa.png')
 platform_rect = platform_image.get_rect()
-platform_rect.center = platform_pos
+platform_rect.topleft = platform_pos
 
 # Functions for screens
 def start_screen():
@@ -59,7 +58,7 @@ def start_screen():
     wait_for_key()
 
 def game_over_screen():
-    screen.fill(BLACK)
+    screen.blit(game_over_background, (0, 0))
     show_text_on_screen("Game Over", 50, HEIGHT // 3)
     show_text_on_screen(f"Your final score: {score}", 30, HEIGHT // 2)
     show_text_on_screen("Press any key to restart...", 20, HEIGHT * 2 // 3)
@@ -67,7 +66,7 @@ def game_over_screen():
     wait_for_key()
 
 def victory_screen():
-    screen.fill(BLACK)
+    screen.blit(victory_background, (0, 0))
     show_text_on_screen("Congratulations!", 50, HEIGHT // 3)
     show_text_on_screen(f"You've won with a score of {score}", 30, HEIGHT // 2)
     show_text_on_screen("Press any key to exit...", 20, HEIGHT * 2 // 3)
@@ -83,16 +82,11 @@ def wait_for_key():
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 waiting = False
-
 def show_text_on_screen(text, font_size, y_position):
     font = pygame.font.Font(None, font_size)
     text_render = font.render(text, True, WHITE)
     text_rect = text_render.get_rect(center=(WIDTH // 2, y_position))
     screen.blit(text_render, text_rect)
-
-def change_platform_color():
-    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-
 # Main game loop
 start_screen()
 game_running = True
@@ -107,13 +101,13 @@ while game_running:
     # Move the platform
     platform_pos[0] += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
     platform_pos[1] += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * platform_speed
-    platform_rect.center = platform_pos
 
     # Ensure the platform stays within the screen boundaries
     platform_pos[0] = max(0, min(platform_pos[0], WIDTH - PLATFORM_WIDTH))
     platform_pos[1] = max(0, min(platform_pos[1], HEIGHT - PLATFORM_HEIGHT))
+    platform_rect.topleft = platform_pos
 
-   # Move the ball
+    # Move the ball
     ball_pos[0] += ball_speed[0]
     ball_pos[1] += ball_speed[1]
     ball_rect.center = ball_pos  # Update the ball image position
@@ -126,19 +120,9 @@ while game_running:
         ball_speed[1] = -ball_speed[1]
 
     # Check if the ball hits the platform
-    if (
-        platform_pos[0] <= ball_pos[0] <= platform_pos[0] + PLATFORM_WIDTH
-        and platform_pos[1] <= ball_pos[1] <= platform_pos[1] + PLATFORM_HEIGHT
-    ):
+    if ball_rect.colliderect(platform_rect) and ball_speed[1] > 0:
         ball_speed[1] = -ball_speed[1]
         score += 1
-
-    # Check if the player advances to the next level
-    if score >= current_level * 10:
-        current_level += 1
-        ball_pos = [WIDTH // 2, HEIGHT // 2]
-        ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]  # Randomize the ball speed
-        platform_color = change_platform_color()
 
     # Check if the ball falls off the screen
     if ball_pos[1] >= HEIGHT:
@@ -163,7 +147,6 @@ while game_running:
     screen.blit(ball_image, ball_rect)
 
     # Draw the platform
-    # pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), PLATFORM_WIDTH, PLATFORM_HEIGHT))
     screen.blit(platform_image, platform_rect)
 
     # Display information
@@ -191,8 +174,7 @@ while game_running:
     # Update the display
     pygame.display.flip()
 
-    # Control the frame rate
+    # Cap the frame rate
     clock.tick(FPS)
 
-# Quit Pygame
 pygame.quit()
