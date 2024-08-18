@@ -44,6 +44,11 @@ ball_image = pygame.image.load('melone.png')
 ball_rect = ball_image.get_rect()
 ball_rect.center = ball_pos
 
+# Load the platform image
+platform_image = pygame.image.load('sofa.png')
+platform_rect = platform_image.get_rect()
+platform_rect.center = platform_pos
+
 # Functions for screens
 def start_screen():
     screen.blit(start_background, (0, 0))
@@ -102,6 +107,7 @@ while game_running:
     # Move the platform
     platform_pos[0] += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
     platform_pos[1] += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * platform_speed
+    platform_rect.center = platform_pos
 
     # Ensure the platform stays within the screen boundaries
     platform_pos[0] = max(0, min(platform_pos[0], WIDTH - PLATFORM_WIDTH))
@@ -157,7 +163,8 @@ while game_running:
     screen.blit(ball_image, ball_rect)
 
     # Draw the platform
-    pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), PLATFORM_WIDTH, PLATFORM_HEIGHT))
+    # pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), PLATFORM_WIDTH, PLATFORM_HEIGHT))
+    screen.blit(platform_image, platform_rect)
 
     # Display information
     info_line_y = 10  # Adjust the vertical position as needed
