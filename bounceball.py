@@ -39,6 +39,11 @@ platform_color = ORANGE  # Initialize platform color
 start_background = pygame.image.load("start-background.jpg")
 spiel_background = pygame.image.load("spiel-background.jpg")
 
+# Load the ball image
+ball_image = pygame.image.load('path_to_your_ball_image.png')
+ball_rect = ball_image.get_rect()
+ball_rect.center = ball_pos
+
 # Functions for screens
 def start_screen():
     screen.blit(start_background, (0, 0))
