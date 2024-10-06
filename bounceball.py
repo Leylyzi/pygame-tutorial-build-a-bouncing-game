@@ -124,6 +124,10 @@ while game_running:
     if ball_rect.colliderect(platform_rect) and ball_speed[1] > 0:
         ball_speed[1] = -ball_speed[1]
         score += 1
+        
+        if score % 10 == 0:
+            current_level += 1
+
 
     # Check if the ball falls off the screen
     if ball_pos[1] >= HEIGHT:
