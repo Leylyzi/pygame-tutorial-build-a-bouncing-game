@@ -35,7 +35,7 @@ current_level = 1
 platform_color = ORANGE  # Initialize platform color
 # Load the background image for the current level
 start_background = pygame.image.load("start-background.jpg")
-victory_background = pygame.image.load("start-background.jpg")
+victory_background = pygame.image.load("victory_screen.jpg")
 game_over_background = pygame.image.load("start-background.jpg")
 spiel_background = pygame.image.load("spiel-background.jpg")
 
@@ -68,9 +68,8 @@ def game_over_screen():
 
 def victory_screen():
     screen.blit(victory_background, (0, 0))
-    show_text_on_screen("Congratulations!", 50, HEIGHT // 3)
-    show_text_on_screen(f"You've won with a score of {score}", 30, HEIGHT // 2)
-    show_text_on_screen("Press any key to exit...", 20, HEIGHT * 2 // 3)
+    show_text_on_screen(f"... with a score of {score}", 30, HEIGHT - (HEIGHT // 15))
+    show_text_on_screen("Press any key to exit...", 20, HEIGHT - (HEIGHT // 25))
     pygame.display.flip()
     wait_for_key()
 
@@ -128,6 +127,8 @@ while game_running:
         if score % 10 == 0:
             current_level += 1
 
+    if current_level == 2:
+        victory_screen()
 
     # Check if the ball falls off the screen
     if ball_pos[1] >= HEIGHT:
